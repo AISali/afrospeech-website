@@ -1,4 +1,33 @@
+'use client'
+
+import { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 export default function Home() {
+
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const handleSignup = async () => {
+
+    if (!email) return
+
+    setLoading(true)
+
+    const { error } = await supabase
+      .from('beta_signups')
+      .insert([{ email }])
+
+    if (error) {
+      setMessage('This email is already registered.')
+    } else {
+      setMessage('Welcome to the AfroSpeech beta!')
+      setEmail('')
+    }
+
+    setLoading(false)
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-purple-100 text-slate-900">
 
@@ -252,16 +281,29 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
 
-            <input
-              placeholder="Your Email"
-              className="px-6 py-4 rounded-2xl border border-slate-300 w-full md:w-96 outline-none focus:border-purple-500"
-            />
+  <input
+    type="email"
+    placeholder="Your Email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    className="px-6 py-4 rounded-2xl border border-slate-300 w-full md:w-96 outline-none focus:border-purple-500"
+  />
 
-            <button className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition">
-              Join Beta
-            </button>
+  <button
+    onClick={handleSignup}
+    disabled={loading}
+    className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition"
+  >
+    {loading ? 'Joining...' : 'Join Beta'}
+  </button>
 
-          </div>
+</div>
+
+{message && (
+  <p className="mt-4 text-sm text-slate-700">
+    {message}
+  </p>
+)}
 
         </div>
 
