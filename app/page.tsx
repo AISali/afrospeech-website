@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 export default function Home() {
 
   const [email, setEmail] = useState('')
@@ -9,6 +8,17 @@ export default function Home() {
   const [message, setMessage] = useState('')
 
   const handleSignup = async () => {
+
+  if (!email) return
+
+  setLoading(true)
+
+  setTimeout(() => {
+    setMessage('Welcome to the AfroSpeech beta!')
+    setEmail('')
+    setLoading(false)
+  }, 1000)
+}
 
     if (!email) return
 
